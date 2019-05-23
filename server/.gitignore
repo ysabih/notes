@@ -11,7 +11,7 @@
 *.userprefs
 
 # EF migration files
-server/OnlineNotes/Migrations/*
+OnlineNotes/Migrations/*
 
 # Build results
 [Dd]ebug/
