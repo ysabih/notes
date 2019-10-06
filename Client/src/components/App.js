@@ -1,4 +1,5 @@
 import React from 'react';
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom"
 import './App.css';
 import AppBar from './AppBar';
 import NotesContainer from './NotesContainer';
@@ -9,12 +10,17 @@ function App() {
         marginTop: '80px'
     }
     return (
-        <>
-            <AppBar></AppBar>
-            <div className="container-fluid" style={containerStyle}>
-                <NotesContainer></NotesContainer>
-            </div>
-        </>
+        <Router>
+            <Route exact path="/">
+                <AppBar></AppBar>
+                <div className="container-fluid" style={containerStyle}>
+                    <NotesContainer></NotesContainer>
+                </div>
+            </Route>
+            <Route path="/create">
+                
+            </Route>
+        </Router>
     );
 }
 
