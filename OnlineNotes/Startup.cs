@@ -38,6 +38,14 @@ namespace OnlineNotes
 		{
 			// Add services to the collection.
 			services.AddMvc();
+			services.AddCors(options =>
+			{
+				options.AddPolicy("Allow React client requests",
+					policyOptions =>
+					{
+						policyOptions.WithOrigins("http://localhost:3000").SetIsOriginAllowed((policy) => true);
+					});
+			});
 
 			var connectionStringBuilder = new MySqlConnectionStringBuilder()
 			{
@@ -65,7 +73,7 @@ namespace OnlineNotes
 		  IApplicationLifetime appLifetime)
 		{
 			app.UseMvc();
-
+			app.UseCors();
 			// If you want to dispose of resources that have been resolved in the
 			// application container, register for the "ApplicationStopped" event.
 			appLifetime.ApplicationStopped.Register(() => applicationContainer.Dispose());

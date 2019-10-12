@@ -1,8 +1,9 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom"
+import { BrowserRouter as Router, Route} from "react-router-dom"
 import './App.css';
 import AppBar from './AppBar';
 import NotesContainer from './NotesContainer';
+import NoteEditor from './NoteEditor';
 
 
 function App() {
@@ -18,7 +19,7 @@ function App() {
                 </div>
             </Route>
             <Route path="/create">
-                
+                <NoteEditor></NoteEditor>
             </Route>
         </Router>
     );

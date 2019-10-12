@@ -14,7 +14,7 @@ const AppBar = () => {
         {
             !searching ?
             <>
-                <div className>
+                <div>
                     <Link className="navbar-brand" to="/">
                         <img src={require('../notes_icon_blue.png')} alt="logo" width="32" height="32" className="d-inline-block align-top"></img>
                         <span className="ml-1 d-none d-sm-inline-block">Notes</span>
