@@ -37,7 +37,10 @@ namespace OnlineNotes
 		public IServiceProvider ConfigureServices(IServiceCollection services)
 		{
 			// Add services to the collection.
-			services.AddMvc();
+			services.AddMvc(options =>
+			{
+				options.Filters.Add<SlowDownActionFilter>();
+			});
 			services.AddCors(options =>
 			{
 				options.AddPolicy("Allow React client requests",
