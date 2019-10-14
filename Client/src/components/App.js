@@ -21,6 +21,7 @@ function App() {
             <Route path="/create">
                 <NoteEditor></NoteEditor>
             </Route>
+            <Route path="/note/:noteId" component={NoteEditor}/>
         </Router>
     );
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.css';
 import './NoteCard.css'
 
@@ -9,7 +10,7 @@ const NoteCard = (props) => {
     return (
         <div className="card" id={props.note.id}>
             <div className="card-body shadow-box shadow-sm">
-                <h4 className="card-title note-title">{truncate(props.note.title, maxTitleLength)}</h4>
+                <Link to={"/note/"+props.note.id}><h4 className="card-title note-title">{truncate(props.note.title, maxTitleLength)}</h4></Link>
                 <p className="card-text text-justify">{truncate(props.note.content, maxContentLength)}</p>
             </div>
         </div>
