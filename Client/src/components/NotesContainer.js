@@ -2,6 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import NoteCard from './NoteCard';
+import LoadingSpinner from './LoadingSpinner';
 
 const NotesContainer = (props) => {
     const [dataFetched, setDataFetched] = useState(false);
@@ -35,11 +36,7 @@ function renderCards(notesList) {
 
 function renderLoadingSpinner() {
     return (
-        <div className="d-flex justify-content-center my-2">
-            <div className="spinner-border" role="status">
-                <span className="sr-only">Loading...</span>
-            </div>
-        </div>
+        <LoadingSpinner/>
     )
 }
 

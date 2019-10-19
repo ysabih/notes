@@ -8,3 +8,7 @@ _loading_overlay_overlay {
     left: 0;
     position: fixed;
 }
+
+input :disabled {
+    background-color: #f5f5f5;
+}

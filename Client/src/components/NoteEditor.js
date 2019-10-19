@@ -3,10 +3,13 @@ import {useState, useEffect} from 'react'
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
+import './NoteEditor.css'
+import LoadingSpinner from './LoadingSpinner'
 
 const NoteEditor = (props) => {
     const [contentFetchFailed, setContentFetchFailed] = useState(false);
     const [noteNotFound, setNoteNotFound] = useState(false);
+    const [loadingNote, setLoadingNote] = useState(false);
     const [note, setNote] = useState({id: null, title: "", content: ""});
 
     let routeNoteId = null;
@@ -16,6 +19,7 @@ const NoteEditor = (props) => {
     
     useEffect(() => {
         if(routeNoteId != null){
+            setLoadingNote(true);
             fetch(`/api/notes/${routeNoteId}`)
             .then((response) => {
                 if(response.status === 404){
@@ -27,7 +31,7 @@ const NoteEditor = (props) => {
                 })
             }, (failureReason) => {
                 setContentFetchFailed(true);
-            });
+            }).finally(() => setLoadingNote(false));
         }
     }, []);
 
@@ -36,7 +40,7 @@ const NoteEditor = (props) => {
         <div className="container-fluid mt-1">
             <div className="container-fluid mb-2 pl-0">
                 <div className="row align-items-center">
-                    <Link className="btn btn-lg" to="/">
+                    <Link className="btn btn-link btn-lg" to="/">
                         <FontAwesomeIcon icon={faArrowLeft}></FontAwesomeIcon>
                     </Link>
                     <button className="btn btn-primary btn-xs ml-auto px-3">
@@ -45,8 +49,22 @@ const NoteEditor = (props) => {
                 </div>
             </div>
             <div>
-                <input className="form-control form-control-lg form-group font-weight-bold" type="text" placeholder="Title" autoFocus value={note.title} onChange={(event) => setNote({ title: event.target.value })} />
-                <textarea className="form-control form-group" rows="25" placeholder="Note something..." value={note.content} onChange={(event) => setNote({ content: event.target.value })} />
+                {loadingNote ? <LoadingSpinner /> : <></>}
+                <input 
+                    className="form-control form-control-lg form-group font-weight-bold" 
+                    type="text" 
+                    placeholder= {loadingNote ? "" : "Title"}
+                    disabled = {loadingNote}
+                    autoFocus value={note.title} 
+                    onChange={(event) => setNote({ title: event.target.value })} 
+                />
+                <textarea
+                    className="form-control form-group" rows="25" 
+                    placeholder= {loadingNote ? "" : "Note something..." }
+                    disabled = {loadingNote}
+                    value={note.content} 
+                    onChange={(event) => setNote({ content: event.target.value })}
+                />
             </div>
         </div>);
     }
