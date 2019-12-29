@@ -22,6 +22,11 @@ namespace OnlineNotes.Controllers
 		[HttpPost("")]
 		public async Task<IActionResult> CreateNoteAsync([FromBody] Note note)
 		{
+			if (note == null)
+			{
+				return BadRequest("Note object is null");
+			}
+
 			note.Id = Guid.NewGuid();
 			note.Created = note.LastModified = DateTime.Now;
 			using (dbContext)

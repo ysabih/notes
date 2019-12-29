@@ -1,6 +1,6 @@
 import React from 'react'
 import {useState, useEffect} from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import './NoteEditor.css'
@@ -14,6 +14,8 @@ const NoteEditor = (props) => {
     const [noteId, setNoteId] = useState(null);
     const [noteTitle, setNoteTitle] = useState('');
     const [noteContent, setNoteContent] = useState('');
+
+    const history = useHistory();
 
     let routeNoteId = null;
     if(props.match !== undefined){
@@ -47,7 +49,7 @@ const NoteEditor = (props) => {
                     <Link className="btn btn-link btn-lg" to="/">
                         <FontAwesomeIcon icon={faArrowLeft}></FontAwesomeIcon>
                     </Link>
-                    <button className="btn btn-primary btn-xs ml-auto px-3" onClick={() => saveNote()}>
+                    <button className="btn btn-primary btn-xs ml-auto px-3" onClick={() => saveOrCreateNote()} disabled={runningBlockingOperation}>
                         Save
                     </button>
                 </div>
@@ -61,7 +63,6 @@ const NoteEditor = (props) => {
                     disabled = {runningBlockingOperation}
                     autoFocus value={noteTitle} 
                     onChange={(event) => {
-                        console.log("Title changed to: "+event.target.value);
                         setNoteTitle(event.target.value);
                     }} 
                 />
@@ -100,15 +101,26 @@ const NoteEditor = (props) => {
         }
     }
 
-    async function saveNote() {
+    async function saveOrCreateNote() {
         try{
             setRunningBlockingOperation(true);
-            let url = `/api/notes/${noteId}`;
             let body = JSON.stringify(getNoteInState());
-            let response = await fetch(url, {method: 'PUT', headers: {'Content-Type': 'application/json'}, body: body});
-            if(response.status === 200){
-                let json = await response.json();
-                console.log("lastModified: " + json.lastModified);
+            let response = null;
+            if(noteId != null){
+                let url = `/api/notes/${noteId}`;
+                response = await fetch(url, {method: 'PUT', headers: {'Content-Type': 'application/json'}, body: body});
+            }
+            else{
+                let url = `/api/notes`;
+                response = await fetch(url, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: body});
+
+                let responseJson = await response.json();
+                console.log("Note created: "+JSON.stringify(responseJson, null, 2));
+                setNoteInState(responseJson);
+                history.push(`/note/${responseJson.id}`);
+            }
+            if(response.status !== 200){
+                // TODO: Handle server errors
             }
         }
         finally{
@@ -124,7 +136,6 @@ const NoteEditor = (props) => {
 
     function getNoteInState() {
         return {
-            id: noteId,
             title: noteTitle,
             content: noteContent
         }
