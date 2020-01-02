@@ -82,6 +82,26 @@ namespace OnlineNotes.Controllers
 			}
 		}
 
+		[HttpDelete("{id:guid}")]
+		public async Task<IActionResult> DeleteNoteAsync([FromRoute] Guid id)
+		{
+			using (dbContext)
+			{
+				var note = new Note{Id = id};
+				dbContext.Attach(note);
+				dbContext.Notes.Remove(note);
+				try
+				{
+					await dbContext.SaveChangesAsync();
+					return Ok();
+				}
+				catch (DbUpdateConcurrencyException)
+				{
+					return NotFound();
+				}
+			}
+		}
+
 		[HttpGet("")]
 		public async Task<IActionResult> GetAllNotes()
 		{
