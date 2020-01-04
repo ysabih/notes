@@ -18,10 +18,10 @@ function App() {
                     <NotesContainer></NotesContainer>
                 </div>
             </Route>
-            <Route path="/create">
+            <Route exact path="/create">
                 <NoteEditor></NoteEditor>
             </Route>
-            <Route path="/note/:noteId" component={NoteEditor}/>
+            <Route exact path="/note/:noteId" component={NoteEditor}/>
         </Router>
     );
 }
