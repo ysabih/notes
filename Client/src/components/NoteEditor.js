@@ -2,7 +2,7 @@ import React from 'react'
 import {useState, useEffect} from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeft,faTrashAlt, faSave } from '@fortawesome/free-solid-svg-icons'
 import './NoteEditor.css'
 import LoadingSpinner from './LoadingSpinner'
 
@@ -32,7 +32,6 @@ const NoteEditor = (props) => {
                     return;
                 }
                 response.json().then((json)=> {
-                    console.log("Note content recevied: "+JSON.stringify(json, null, 2));
                     setNoteInState(json);
                 })
             }, (failureReason) => {
@@ -49,11 +48,37 @@ const NoteEditor = (props) => {
                     <Link className="btn btn-link btn-lg" to="/">
                         <FontAwesomeIcon icon={faArrowLeft}></FontAwesomeIcon>
                     </Link>
-                    <button className="btn btn-primary btn-xs ml-auto px-3" onClick={() => saveOrCreateNote()} disabled={runningBlockingOperation}>
-                        Save
-                    </button>
+                    <div className="row align-items-right ml-auto px-3">
+                        {noteId ? <button className="btn btn-link" data-toggle="modal" data-target="#exampleModal">
+                            <FontAwesomeIcon icon={faTrashAlt} color="red"></FontAwesomeIcon>
+                        </button> : <></>}
+                        <button className="btn btn-link ml-2" onClick={() => saveOrCreateNote()} disabled={runningBlockingOperation}>
+                            <FontAwesomeIcon icon={faSave}></FontAwesomeIcon>
+                        </button>
+                    </div>
                 </div>
             </div>
+            
+            <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div className="modal-dialog" role="document">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title" id="exampleModalLabel">Delete note</h5>
+                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div className="modal-body">
+                            Are you sure you want to delete this note ?
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" className="btn btn-danger" data-dismiss="modal" onClick={deleteNoteAsync}>Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div>
                 {runningBlockingOperation ? <LoadingSpinner /> : <></>}
                 <input 
@@ -102,29 +127,30 @@ const NoteEditor = (props) => {
     }
 
     async function saveOrCreateNote() {
-        try{
-            setRunningBlockingOperation(true);
-            let body = JSON.stringify(getNoteInState());
-            let response = null;
-            if(noteId != null){
-                let url = `/api/notes/${noteId}`;
-                response = await fetch(url, {method: 'PUT', headers: {'Content-Type': 'application/json'}, body: body});
-            }
-            else{
-                let url = `/api/notes`;
-                response = await fetch(url, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: body});
-
-                let responseJson = await response.json();
-                console.log("Note created: "+JSON.stringify(responseJson, null, 2));
-                setNoteInState(responseJson);
-                history.push(`/note/${responseJson.id}`);
-            }
-            if(response.status !== 200){
-                // TODO: Handle server errors
-            }
-        }
-        finally{
+        setRunningBlockingOperation(true);
+        let body = JSON.stringify(getNoteInState());
+        let response = null;
+        if(noteId != null){
+            let url = `/api/notes/${noteId}`;
+            response = await fetch(url, {method: 'PUT', headers: {'Content-Type': 'application/json'}, body: body});
             setRunningBlockingOperation(false);
+        }
+        else{
+            let url = `/api/notes`;
+            response = await fetch(url, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: body});
+            let responseJson = await response.json();
+            history.push(`/note/${responseJson.id}`);
+        }
+    }
+
+    async function deleteNoteAsync() {
+        setRunningBlockingOperation(true);
+        
+        let url = `/api/notes/${noteId}`;
+        let response = await fetch(url, {method: 'DELETE'});
+        if(response.status === 200){
+            // Note was deleted with success, back to home page
+            history.push('/');
         }
     }
     
@@ -140,11 +166,7 @@ const NoteEditor = (props) => {
             content: noteContent
         }
     }
-
     return renderContent();
-
 };
-
-
 
 export default NoteEditor;
