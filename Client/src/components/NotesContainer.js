@@ -29,7 +29,7 @@ function renderCards(notesList) {
     return (
         <div className="card-columns pt-md-3 pt-lg-3 pt-sm-5">
             {
-                notesList.map((element) => <NoteCard note={element}></NoteCard>)
+                notesList.map((element) => <NoteCard note={element} key={element.id}></NoteCard>)
             }
         </div>)
 };
