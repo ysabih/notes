@@ -14,7 +14,7 @@ namespace OnlineNotes.Controllers
 	{
 		private readonly NotesDbContext dbContext;
 
-		public NotesController(ILogger<NotesController> logger, IConfiguration configuration, NotesDbContext dbContext)
+		public NotesController(ILogger<NotesController> logger, NotesDbContext dbContext)
 		{
 			this.dbContext = dbContext;
 		}

@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace OnlineNotes
@@ -11,9 +11,12 @@ namespace OnlineNotes
 			CreateWebHostBuilder(args).Build().Run();
 		}
 
-		private static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-			WebHost.CreateDefaultBuilder(args)
-				.UseStartup<Startup>()
+		private static IHostBuilder CreateWebHostBuilder(string[] args) =>
+			Host.CreateDefaultBuilder(args)
+				.ConfigureWebHostDefaults(webBuilder =>
+				{
+					webBuilder.UseStartup<Startup>();
+				})
 				.ConfigureLogging(loggingBuilder =>
 				{
 					loggingBuilder.AddConsole();
