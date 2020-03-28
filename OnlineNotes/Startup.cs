@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MySql.Data.MySqlClient;
+using OnlineNotes.Model;
 using OnlineNotes.Storage;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
@@ -53,10 +55,20 @@ namespace OnlineNotes
 				ConnectionString = configuration["Mysql:ConnectionString"],
 				Password = configuration["Mysql:Password"]
 			};
-			services.AddDbContext<NotesDbContext>(options => options.UseMySql(connectionStringBuilder.ConnectionString, mySqlOptions =>
+			services.AddDbContext<ApplicationDbContext>(options => options.UseMySql(connectionStringBuilder.ConnectionString, mySqlOptions =>
 			{
 				mySqlOptions.ServerVersion(new Version(5, 7), ServerType.MySql);
 			}));
+
+			services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
+				.AddEntityFrameworkStores<ApplicationDbContext>();
+
+			services.AddIdentityServer()
+				.AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+
+			services.AddAuthentication()
+				.AddIdentityServerJwt();
+
 		}
 
 		// Configure is where you add middleware. This is called after
@@ -67,6 +79,11 @@ namespace OnlineNotes
 		{
 			app.UseCors();
 			app.UseRouting();
+
+			app.UseAuthentication();
+			app.UseIdentityServer();
+			app.UseAuthorization();
+
 			app.UseEndpoints(routes =>
 			{
 				routes.MapControllers();

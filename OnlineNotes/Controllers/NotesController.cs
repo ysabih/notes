@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using OnlineNotes.Model;
 using OnlineNotes.Storage;
@@ -10,11 +10,12 @@ using OnlineNotes.Storage;
 namespace OnlineNotes.Controllers
 {
 	[Route("api/notes")]
+	[Authorize]
 	public class NotesController : Controller
 	{
-		private readonly NotesDbContext dbContext;
+		private readonly ApplicationDbContext dbContext;
 
-		public NotesController(ILogger<NotesController> logger, NotesDbContext dbContext)
+		public NotesController(ILogger<NotesController> logger, ApplicationDbContext dbContext)
 		{
 			this.dbContext = dbContext;
 		}
