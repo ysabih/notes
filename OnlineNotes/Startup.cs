@@ -41,10 +41,12 @@ namespace OnlineNotes
 			}).AddNewtonsoftJson();
 
 			services.AddCors(options => {
-				options.AddDefaultPolicy(
+				options.AddPolicy("default",
 				builder =>
 				{
-					builder.AllowAnyOrigin();
+					builder.AllowAnyOrigin()
+						   .AllowAnyHeader()
+						   .AllowAnyMethod();
 				});
 			});
 
@@ -57,6 +59,15 @@ namespace OnlineNotes
 			{
 				mySqlOptions.ServerVersion(new Version(5, 7), ServerType.MySql);
 			}));
+
+			services.AddAuthentication("Bearer")
+			.AddJwtBearer("Bearer", options =>
+			{
+				options.Authority = "http://localhost:5001";
+				options.RequireHttpsMetadata = false;
+
+				options.Audience = "notes";
+			});
 		}
 
 		// Configure is where you add middleware. This is called after
@@ -65,8 +76,12 @@ namespace OnlineNotes
 		public void Configure(
 		  IApplicationBuilder app)
 		{
-			app.UseCors();
+			app.UseCors("default");
 			app.UseRouting();
+
+			app.UseAuthentication();
+			app.UseAuthorization();
+
 			app.UseEndpoints(routes =>
 			{
 				routes.MapControllers();
