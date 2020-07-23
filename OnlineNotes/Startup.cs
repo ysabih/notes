@@ -57,10 +57,10 @@ namespace OnlineNotes
 			services.AddAuthentication("Bearer")
 			.AddJwtBearer("Bearer", options =>
 			{
-				options.Authority = "http://localhost:5001";
+				options.Authority = "http://localhost:8080/auth/realms/notes-app";
 				options.RequireHttpsMetadata = false;
 
-				options.Audience = "notes";
+				options.Audience = "notes-api";
 			});
 		}
 

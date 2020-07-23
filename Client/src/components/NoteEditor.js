@@ -1,5 +1,6 @@
 import React from 'react'
 import {useState, useEffect} from 'react'
+import { useReactOidc } from '@axa-fr/react-oidc-context';
 import { Link, useHistory } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft,faTrashAlt, faSave } from '@fortawesome/free-solid-svg-icons'
@@ -15,6 +16,8 @@ const NoteEditor = (props) => {
     const [noteTitle, setNoteTitle] = useState('');
     const [noteContent, setNoteContent] = useState('');
 
+    const oidcUser = useReactOidc();
+
     const history = useHistory();
 
     let routeNoteId = null;
@@ -22,10 +25,18 @@ const NoteEditor = (props) => {
         routeNoteId = props.match.params.noteId;
     }
 
+    console.log("noteId from route: "+routeNoteId);
+
     useEffect(() => {
         if(routeNoteId != null){
             setRunningBlockingOperation(true);
-            fetch(`/api/notes/${routeNoteId}`)
+
+            fetch(
+                `/api/notes/${routeNoteId}`,
+                {
+                    method: "GET",
+                    headers: new Headers({'Authorization': 'Bearer ' + oidcUser.oidcUser.access_token})
+                })
             .then((response) => {
                 if(response.status === 404){
                     setNoteNotFound(true);
@@ -132,12 +143,30 @@ const NoteEditor = (props) => {
         let response = null;
         if(noteId != null){
             let url = `/api/notes/${noteId}`;
-            response = await fetch(url, {method: 'PUT', headers: {'Content-Type': 'application/json'}, body: body});
+            response = await fetch(
+                url, 
+                {
+                    method: 'PUT', 
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + oidcUser.oidcUser.access_token
+                    },
+                    body: body
+                });
             setRunningBlockingOperation(false);
         }
         else{
             let url = `/api/notes`;
-            response = await fetch(url, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: body});
+            response = await fetch(
+                url,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + oidcUser.oidcUser.access_token
+                    },
+                body: body
+            });
             let responseJson = await response.json();
             history.push(`/note/${responseJson.id}`);
         }
@@ -145,12 +174,24 @@ const NoteEditor = (props) => {
 
     async function deleteNoteAsync() {
         setRunningBlockingOperation(true);
-        
+        console.log("[DELETE note] access token: "+oidcUser.oidcUser.access_token);
         let url = `/api/notes/${noteId}`;
-        let response = await fetch(url, {method: 'DELETE'});
-        if(response.status === 200){
-            // Note was deleted with success, back to home page
-            history.push('/');
+        try{
+            let response = await fetch(
+                url, 
+                {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': 'Bearer ' + oidcUser.oidcUser.access_token
+                    }
+                });
+            if(response.status === 200){
+                // Note was deleted successfully, go back to home page
+                history.push('/');
+            }
+        }
+        catch{
+            setRunningBlockingOperation(false);
         }
     }
     
