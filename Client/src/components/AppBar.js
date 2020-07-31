@@ -8,7 +8,7 @@ import './AppBar.css'
 
 const AppBar = () => {
     const [searching, setSearching] = useState(false);
-    
+
     return (
         <nav className="navbar bg-light navbar-expand-lg fixed-top shadow-box shadow-sm d-flex" >
         {
@@ -30,6 +30,7 @@ const AppBar = () => {
                             <span className="font-weight-bold">YS</span>
                         </a>
                         <div className="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                            <a className="dropdown-item" href="#">Profile</a>
                             <a className="dropdown-item" href="#">Sign out</a>
                         </div>
                     </div>
