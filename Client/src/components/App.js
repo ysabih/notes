@@ -1,28 +1,28 @@
 import React from 'react';
-import { BrowserRouter as Router, Route} from "react-router-dom"
+import { BrowserRouter as Router, Route, Switch} from "react-router-dom"
 import './App.css';
-import AppBar from './AppBar';
-import NotesContainer from './NotesContainer';
 import NoteEditor from './NoteEditor';
-
+import {AuthProvider} from '../providers/authProvider'
+import {PrivateRoute} from './auth/PrivateRoute';
+import {Callback} from './auth/Callback';
+import {Public} from './Public'
+import Home from './Home';
 
 function App() {
-    const containerStyle = {
-        marginTop: '80px'
-    }
     return (
-        <Router>
-            <Route exact path="/">
-                <AppBar></AppBar>
-                <div className="container-fluid" style={containerStyle}>
-                    <NotesContainer></NotesContainer>
-                </div>
-            </Route>
-            <Route exact path="/create">
-                <NoteEditor></NoteEditor>
-            </Route>
-            <Route exact path="/note/:noteId" component={NoteEditor}/>
-        </Router>
+        <AuthProvider>
+            <Router>
+                <Switch>
+                    <Route exact={true} path="/signin-callback" component={Callback} />
+                    
+                    <PrivateRoute exact path="/notes" component={Home}/>
+
+                    <PrivateRoute exact path="/create" component={NoteEditor} />
+                    <PrivateRoute exact path="/note/:noteId" component={NoteEditor}/>
+                    <Route path="/" component={Public} />
+                </Switch>
+            </Router>
+        </AuthProvider>
     );
 }
 
