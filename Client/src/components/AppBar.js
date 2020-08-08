@@ -1,13 +1,23 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import { useState } from 'react'
 import {Link} from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch, faPlus, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import './AppBar.css'
+import { AuthContext } from 'providers/authProvider'
 
 const AppBar = () => {
     const [searching, setSearching] = useState(false);
+    const [userName, setUserName] = useState("");
+
+    const authContext = useContext(AuthContext);
+
+    useEffect(() => {
+        authContext.getUserAsync().then((user) => {
+            setUserName(user.profile.given_name);
+        })
+    }, []);
 
     return (
         <nav className="navbar bg-light navbar-expand-lg fixed-top shadow-box shadow-sm d-flex" >
@@ -27,7 +37,7 @@ const AppBar = () => {
                     {/*  */}
                     <div className="dropdown">
                         <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span className="font-weight-bold">YS</span>
+                            <span className="font-weight-bold">{userName}</span>
                         </a>
                         <div className="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                             <a className="dropdown-item" href="#">Profile</a>
