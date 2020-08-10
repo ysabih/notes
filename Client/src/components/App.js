@@ -7,6 +7,7 @@ import {PrivateRoute} from './auth/PrivateRoute';
 import {Callback} from './auth/Callback';
 import {Public} from './Public'
 import Home from './Home';
+import { SilentRenew } from './auth/SilentRenew';
 
 function App() {
     return (
@@ -14,6 +15,7 @@ function App() {
             <Router>
                 <Switch>
                     <Route exact={true} path="/signin-callback" component={Callback} />
+                    <Route exact={true} path="/silent-renew-callback" component={SilentRenew} />
                     
                     <PrivateRoute exact path="/notes" component={Home}/>
 

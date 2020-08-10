@@ -30,15 +30,15 @@ export default class AuthService {
         window.location = user.state || "/";
     }
     
-    login = () => {
+    loginAsync = () => {
         return this.userManager.signinRedirect({state:window.location.href});
     }
     
-    renewToken = () => {
+    renewTokenAsync = () => {
         return this.userManager.signinSilent();
     }
     
-    logout = () => {
+    logoutAsync = () => {
         return this.userManager.signoutRedirect();
     }
 }
