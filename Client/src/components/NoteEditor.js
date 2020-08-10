@@ -49,7 +49,7 @@ const NoteEditor = (props) => {
         <div className="container-fluid mt-1">
             <div className="container-fluid mb-2 pl-0">
                 <div className="row align-items-center">
-                    <Link className="btn btn-link btn-lg" to="/">
+                    <Link className="btn btn-link btn-lg" to="/notes">
                         <FontAwesomeIcon icon={faArrowLeft}></FontAwesomeIcon>
                     </Link>
                     <div className="row align-items-right ml-auto px-3">
@@ -170,7 +170,7 @@ const NoteEditor = (props) => {
 
         if(response.status === 200){
             // Note was deleted with success, back to home page
-            history.push('/');
+            history.push('/notes');
         }
     }
     
