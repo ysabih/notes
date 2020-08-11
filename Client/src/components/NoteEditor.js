@@ -53,7 +53,7 @@ const NoteEditor = (props) => {
                         <FontAwesomeIcon icon={faArrowLeft}></FontAwesomeIcon>
                     </Link>
                     <div className="row align-items-right ml-auto px-3">
-                        {noteId ? <button className="btn btn-link" data-toggle="modal" data-target="#exampleModal">
+                        {noteId ? <button className="btn btn-link" data-toggle="modal" data-target="#deleteModal">
                             <FontAwesomeIcon icon={faTrashAlt} color="red"></FontAwesomeIcon>
                         </button> : <></>}
                         <button className="btn btn-link ml-2" onClick={() => saveOrCreateNoteAsync()} disabled={runningBlockingOperation}>
@@ -63,11 +63,11 @@ const NoteEditor = (props) => {
                 </div>
             </div>
             
-            <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div className="modal fade" id="deleteModal" tabIndex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
                 <div className="modal-dialog" role="document">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title" id="exampleModalLabel">Delete note</h5>
+                            <h5 className="modal-title" id="deleteModalLabel">Delete note</h5>
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -76,8 +76,8 @@ const NoteEditor = (props) => {
                             Are you sure you want to delete this note ?
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-danger" data-dismiss="modal" onClick={deleteNoteAsync}>Delete</button>
+                            <button type="button" className="btn btn-secondary" data-dismiss="modal">NO</button>
+                            <button type="button" className="btn btn-danger" data-dismiss="modal" onClick={deleteNoteAsync}>YES</button>
                         </div>
                     </div>
                 </div>
