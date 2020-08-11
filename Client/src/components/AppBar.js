@@ -19,7 +19,12 @@ const AppBar = () => {
         })
     }, []);
 
+    function logout() {
+        window.location = '/logout';
+    } 
+
     return (
+        <>
         <nav className="navbar bg-light navbar-expand-lg fixed-top shadow-box shadow-sm d-flex" >
         {
             !searching ?
@@ -40,11 +45,12 @@ const AppBar = () => {
                             <span className="font-weight-bold">{userName}</span>
                         </a>
                         <div className="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                            <a className="dropdown-item" href="#">Profile</a>
-                            <a className="dropdown-item" href="#">Sign out</a>
+                            <a className="dropdown-item" href="#">Settings</a>
+                            <a className="dropdown-item" style={{color: 'red'}} data-toggle="modal" data-target="#logoutModal">Sign out</a>
                         </div>
                     </div>
                 </div>
+
             </>
             :
             <div className="d-flex flex-row no-wrap flex-grow-1 p-0">
@@ -53,6 +59,27 @@ const AppBar = () => {
             </div>
         }
         </nav>
+
+        <div className="modal fade" id="logoutModal" tabIndex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div className="modal-dialog" role="document">
+            <div className="modal-content">
+                <div className="modal-header">
+                    <h5 className="modal-title" id="logoutModalLabel">Log out</h5>
+                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div className="modal-body">
+                    Are you sure you want to log out ?
+                </div>
+                <div className="modal-footer">
+                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" className="btn btn-danger" data-dismiss="modal" onClick={logout}>YES</button>
+                </div>
+            </div>
+        </div>
+        </div>
+        </>
     );
 };
 

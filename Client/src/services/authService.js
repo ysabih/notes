@@ -39,6 +39,13 @@ export default class AuthService {
     }
     
     logoutAsync = () => {
-        return this.userManager.signoutRedirect();
+        this.userManager.signoutRedirect();
+    }
+
+    logoutCallbackAsync = () => {
+        this.userManager.signoutRedirectCallback().then(() => {
+            localStorage.clear();
+            window.location.replace('/');
+        });
     }
 }
