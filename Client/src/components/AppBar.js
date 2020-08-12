@@ -7,11 +7,13 @@ import { faSearch, faPlus, faArrowLeft } from '@fortawesome/free-solid-svg-icons
 import './AppBar.css'
 import { AuthContext } from 'providers/authProvider'
 
-const AppBar = () => {
+const AppBar = (props) => {
     const [searching, setSearching] = useState(false);
     const [userName, setUserName] = useState("");
 
     const authContext = useContext(AuthContext);
+
+    const setSearchString = props.setSearchString;
 
     useEffect(() => {
         authContext.getUserAsync().then((user) => {
@@ -21,7 +23,11 @@ const AppBar = () => {
 
     function logout() {
         window.location = '/logout';
-    } 
+    }
+
+    function handleSearchStringChange(e) {
+        setSearchString(e.target.value);
+      }
 
     return (
         <>
@@ -46,7 +52,7 @@ const AppBar = () => {
                         </a>
                         <div className="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                             <a className="dropdown-item" href="#">Settings</a>
-                            <a className="dropdown-item" style={{color: 'red'}} data-toggle="modal" data-target="#logoutModal">Sign out</a>
+                            <a className="dropdown-item" href="#" style={{color: 'red'}} data-toggle="modal" data-target="#logoutModal">Sign out</a>
                         </div>
                     </div>
                 </div>
@@ -54,8 +60,8 @@ const AppBar = () => {
             </>
             :
             <div className="d-flex flex-row no-wrap flex-grow-1 p-0">
-                <button id="backButton" type="button" className="btn btn-link pl-0" onClick={() => setSearching(false)}> <FontAwesomeIcon icon={faArrowLeft} /> </button>
-                <input id="searchBar" type="text" className="form-control flex-grow-1" placeholder="Search..." autoFocus></input>
+                <button id="backButton" type="button" className="btn btn-link pl-0" onClick={() => {setSearching(false); setSearchString("");}}> <FontAwesomeIcon icon={faArrowLeft} /> </button>
+                <input id="searchBar" type="text" className="form-control flex-grow-1" placeholder="Search..." onChange={handleSearchStringChange} autoFocus></input>
             </div>
         }
         </nav>
