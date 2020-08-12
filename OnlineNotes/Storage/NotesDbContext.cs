@@ -10,5 +10,12 @@ namespace OnlineNotes.Storage
 		}
 
 		public DbSet<Note> Notes { get; set; }
+
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
+		{
+			base.OnModelCreating(modelBuilder);
+			modelBuilder.Entity<Note>()
+				.HasIndex(b => b.UserId);
+		}
 	}
 }

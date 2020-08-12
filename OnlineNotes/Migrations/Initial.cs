@@ -12,6 +12,7 @@ namespace OnlineNotes.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
+                    UserId = table.Column<string>(nullable: false),
                     Title = table.Column<string>(nullable: true),
                     Content = table.Column<string>(nullable: true),
                     Created = table.Column<DateTime>(nullable: false),
@@ -21,6 +22,11 @@ namespace OnlineNotes.Migrations
                 {
                     table.PrimaryKey("PK_Notes", x => x.Id);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notes_UserId",
+                table: "Notes",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
