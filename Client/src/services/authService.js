@@ -1,7 +1,7 @@
 import oidcConfiguration from "../utils/oidcConfig";
 import { UserManager, WebStorageStateStore, Log } from "oidc-client";
 
-export default class AuthService {
+class AuthService {
     userManager;
 
     constructor() {
@@ -49,3 +49,7 @@ export default class AuthService {
         });
     }
 }
+
+
+const OidcService = new AuthService();
+export default OidcService;

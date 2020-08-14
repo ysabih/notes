@@ -1,32 +1,23 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import NoteCard from './NoteCard';
 import LoadingSpinner from './LoadingSpinner';
-import {AuthContext} from '../providers/authProvider'
+import apiService from 'services/apiService';
 
 const NotesContainer = (props) => {
     const [dataFetched, setDataFetched] = useState(false);
     const [dataFetchFailed, setDataFetchFailed] = useState(false);
     const [notesList, setNotesList] = useState([]);
 
-    const authContext = useContext(AuthContext);
-
     useEffect(() => {
-        authContext.getUserAsync().then((user) => {
-            let token = user.access_token;
-            console.log("id_token: ", user.id_token);
-            console.log("access_token: ", user.access_token);
-            fetch("/api/notes", {method: "GET", headers: new Headers({'Authorization': 'Bearer ' + token})})
-            .then((response) => {
-                response.json().then(json => {
-                    setNotesList(json);
-                    setDataFetched(true);
-                })
-            },
-            (failureReason) => {
-                setDataFetchFailed(true);
-            })});
+        apiService.getAllNotesAsync().then((notes) => {
+            setNotesList(notes);
+            setDataFetched(true);
+        })
+        .catch((failureReason) => {
+            setDataFetchFailed(true);
+        });   
     }, []);
 
     return dataFetched ? renderCards(notesList, props.searchString) : (dataFetchFailed ? renderDataFetchErrorMessage() : renderLoadingSpinner());
