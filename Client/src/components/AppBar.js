@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch, faPlus, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import './AppBar.css'
 import { AuthContext } from 'providers/authProvider'
+import {USER_PROFILE_URL} from '../utils/oidcConfig'
 
 const AppBar = (props) => {
     const [searching, setSearching] = useState(false);
@@ -51,7 +52,7 @@ const AppBar = (props) => {
                             <span className="font-weight-bold">{userName}</span>
                         </a>
                         <div className="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                            <a className="dropdown-item" href="#">Settings</a>
+                            <a className="dropdown-item" href={USER_PROFILE_URL}>Settings</a>
                             <a className="dropdown-item" href="#" style={{color: 'red'}} data-toggle="modal" data-target="#logoutModal">Sign out</a>
                         </div>
                     </div>

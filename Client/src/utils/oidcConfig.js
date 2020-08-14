@@ -10,5 +10,6 @@ const oidcConfiguration = {
     loadUserInfo: true,
   };
   
-  
+  export const USER_PROFILE_URL = `${oidcConfiguration.authority}/account?referrer=${oidcConfiguration.client_id}`
+
   export default oidcConfiguration;
