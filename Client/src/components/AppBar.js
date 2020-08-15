@@ -44,16 +44,16 @@ const AppBar = (props) => {
                 </div>
 
                 <div className="flex-grow-1 d-flex flex-row justify-content-end">
-                    <Link to="/create" id="addButton" className="btn btn-link"> <FontAwesomeIcon icon={faPlus} /> </Link>
+                    <button onClick={props.createNewNote} id="addButton" className="btn btn-link"> <FontAwesomeIcon icon={faPlus} /> </button>
                     <button id="searchButton" type="button" className="btn btn-link" onClick={() => setSearching(true)}> <FontAwesomeIcon icon={faSearch} /> </button>
                     {/*  */}
                     <div className="dropdown">
-                        <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <button className="btn btn-link nav-link dropdown-toggle" id="navbarDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span className="font-weight-bold">{userName}</span>
-                        </a>
+                        </button>
                         <div className="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                             <a className="dropdown-item" href={USER_PROFILE_URL}>Settings</a>
-                            <a className="dropdown-item" href="#" style={{color: 'red'}} data-toggle="modal" data-target="#logoutModal">Sign out</a>
+                            <button className="dropdown-item" style={{color: 'red'}} data-toggle="modal" data-target="#logoutModal">Sign out</button>
                         </div>
                     </div>
                 </div>

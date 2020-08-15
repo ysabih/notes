@@ -1,7 +1,7 @@
 import React from 'react';
 import {useState, useContext, useEffect}from 'react';
 import { AuthContext } from "../providers/authProvider";
-import Home from './Home';
+import NotesContainer from './NotesContainer';
 
 export const Public = () => {
 
@@ -16,7 +16,7 @@ export const Public = () => {
 
     function renderContent() {
         if(user){
-            return <Home/>
+            return <NotesContainer/>
         }
         else{
             return <h2>Welcome, Login or Sign up</h2>

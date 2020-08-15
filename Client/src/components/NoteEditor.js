@@ -1,54 +1,32 @@
-import React, { useContext, useState, useEffect} from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft,faTrashAlt, faSave } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeft, faTrashAlt, faSave } from '@fortawesome/free-solid-svg-icons'
 import './NoteEditor.css'
 import LoadingSpinner from './LoadingSpinner'
-import { AuthContext } from 'providers/authProvider'
 import apiService from 'services/apiService';
 
+// Expects note object to be passed as a prop
 const NoteEditor = (props) => {
-    const [contentFetchFailed, setContentFetchFailed] = useState(false);
-    const [noteNotFound, setNoteNotFound] = useState(false);
     const [runningBlockingOperation, setRunningBlockingOperation] = useState(false);
 
     const [noteId, setNoteId] = useState(null);
     const [noteTitle, setNoteTitle] = useState('');
     const [noteContent, setNoteContent] = useState('');
 
-    const history = useHistory();
-    const authContext = useContext(AuthContext);
-
-    let routeNoteId = null;
-    if(props.match !== undefined){
-        routeNoteId = props.match.params.noteId;
-    }
-
     useEffect(() => {
-        if(routeNoteId != null){
-            setRunningBlockingOperation(true);
-            apiService.getNoteAsync(routeNoteId).then((note) => {
-                if(note == null){
-                    // Not found
-                    setNoteNotFound(true);
-                    return;
-                }
-                setNoteInState(note);
-            },
-            (failureReason) => {
-                setContentFetchFailed(true);
-            }).finally(() => setRunningBlockingOperation(false));
+        if(props.note != null){
+            setNoteInState(props.note);
         }
     }, []);
 
-    function renderNoteContentForm(){
+    function renderContent(){
         return (
         <div className="container-fluid mt-1">
             <div className="container-fluid mb-2 pl-0">
                 <div className="row align-items-center">
-                    <Link className="btn btn-link btn-lg" to="/notes">
+                    <button className="btn btn-link btn-lg" onClick={props.backFunc}>
                         <FontAwesomeIcon icon={faArrowLeft}></FontAwesomeIcon>
-                    </Link>
+                    </button>
                     <div className="row align-items-right ml-auto px-3">
                         {noteId ? <button className="btn btn-link" data-toggle="modal" data-target="#deleteModal">
                             <FontAwesomeIcon icon={faTrashAlt} color="red"></FontAwesomeIcon>
@@ -103,38 +81,17 @@ const NoteEditor = (props) => {
         </div>);
     }
 
-    function renderNotFound(){
-        return (
-            <h5>NotFound 404</h5>
-        );
-    }
-    
-    function renderContentFetchFailed(){
-        return (
-            <h5>Oops! Server error. Try again later</h5>
-        );
-    }
-
-    function renderContent(){
-        if(!contentFetchFailed && !noteNotFound){
-            return renderNoteContentForm();
-        }
-        if(noteNotFound){
-            return renderNotFound();
-        }
-        if(contentFetchFailed){
-            return renderContentFetchFailed();
-        }
-    }
-
     async function saveOrCreateNoteAsync() {
         setRunningBlockingOperation(true);
         if(noteId != null){
-            await apiService.modifyNoteAsync(noteId, getNoteInState());
+            let note = getNoteInState();
+            await apiService.modifyNoteAsync(note);
+            props.onNoteModified(note);
         }
         else{
             let created = await apiService.createNoteAsync(getNoteInState()); 
-            history.push(`/note/${created.id}`);
+            setNoteInState(created);
+            props.onNewNoteCreated(created);
         }
         setRunningBlockingOperation(false);
     }
@@ -145,7 +102,8 @@ const NoteEditor = (props) => {
 
         if(success){
             // Note was deleted with success, back to home page
-            history.push('/notes');
+            props.onNoteDeleted(noteId);
+            props.backFunc();
         }
     }
     
@@ -156,10 +114,12 @@ const NoteEditor = (props) => {
     }
 
     function getNoteInState() {
-        return {
+        let result =  {
             title: noteTitle,
             content: noteContent
         }
+        if(noteId != null) result.id = noteId;
+        return result;
     }
     return renderContent();
 };

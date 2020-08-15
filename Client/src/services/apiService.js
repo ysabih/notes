@@ -35,9 +35,9 @@ class ApiService {
         return null;
     }
 
-    modifyNoteAsync = async (noteId, note) => {
+    modifyNoteAsync = async (note) => {
         let token = await getAccessTokenAsync();
-        let url = `/api/notes/${noteId}`;
+        let url = `/api/notes/${note.id}`;
         let body = JSON.stringify(note);
         await fetch(
             url, 
@@ -46,7 +46,6 @@ class ApiService {
                 headers: new Headers({'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json'}),
                 body: body
             });
-        return
     }
 
     deleteNoteAsync = async (noteId) => {
