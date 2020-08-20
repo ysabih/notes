@@ -1,16 +1,22 @@
 import OidcService from './authService';
 
 class ApiService {
+
+    backendUrl;
+
+    constructor() {
+        this.backendUrl = process.env.REACT_APP_BACKEND_URL;
+    }
     
     getAllNotesAsync = async () => {
         let token = await getAccessTokenAsync();
-        let response = await fetch("/api/notes", {method: "GET", headers: new Headers({'Authorization': 'Bearer ' + token})});
+        let response = await fetch(`${this.backendUrl}/api/notes`, {method: "GET", headers: new Headers({'Authorization': 'Bearer ' + token})});
         return (await response.json());
     }
 
     getNoteAsync = async (noteId) => {
         let token = await getAccessTokenAsync();
-        let response = await fetch(`/api/notes/${noteId}`, {method: "GET", headers: new Headers({'Authorization': 'Bearer ' + token})})
+        let response = await fetch(`${this.backendUrl}/api/notes/${noteId}`, {method: "GET", headers: new Headers({'Authorization': 'Bearer ' + token})})
         if(response.status === 404){
             return null;
         }
@@ -20,7 +26,7 @@ class ApiService {
     createNoteAsync = async (note) => {
         let token = await getAccessTokenAsync();
         let body = JSON.stringify(note);
-        let response = await fetch('/api/notes', 
+        let response = await fetch(`${this.backendUrl}/api/notes`, 
             {
                 method: 'POST',
                 headers: {
@@ -37,7 +43,7 @@ class ApiService {
 
     modifyNoteAsync = async (note) => {
         let token = await getAccessTokenAsync();
-        let url = `/api/notes/${note.id}`;
+        let url = `${this.backendUrl}/api/notes/${note.id}`;
         let body = JSON.stringify(note);
         await fetch(
             url, 
@@ -50,7 +56,7 @@ class ApiService {
 
     deleteNoteAsync = async (noteId) => {
         let token = await getAccessTokenAsync();
-        let response = await fetch(`/api/notes/${noteId}`, {method: 'DELETE', headers: new Headers({'Authorization': 'Bearer ' + token})});
+        let response = await fetch(`${this.backendUrl}/api/notes/${noteId}`, {method: 'DELETE', headers: new Headers({'Authorization': 'Bearer ' + token})});
         return response.status === 200;
     }
 

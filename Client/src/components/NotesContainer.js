@@ -60,16 +60,13 @@ const NotesContainer = () => {
     }
 
     function renderCards(notesList, searchString, setSearchString) {
-        const containerStyle = {
-            marginTop: '80px'
-        }
         let lower = searchString.toLowerCase();
         let filtered = isEmpty(searchString) ? notesList : 
                         notesList.filter(note => note.title.toLowerCase().includes(lower) || note.content.toLowerCase().includes(lower));
         return (
             <>
             <AppBar setSearchString={setSearchString} createNewNote={setCreateNewNote}></AppBar>
-            <div className="container-fluid" style={containerStyle}>
+            <div className="container-fluid" style={{marginTop: '80px'}}>
                 <div className="card-columns pt-md-3 pt-lg-3 pt-sm-5">
                     {
                         filtered.map((element) => <NoteCard note={element} openNote = {() => setEditExistingNote(element.id)} key={element.id}></NoteCard>)

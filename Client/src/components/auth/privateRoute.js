@@ -14,7 +14,7 @@ export const PrivateRoute = ({ component, ...rest }) => {
         if (isAuth) {
           return <Component {...props} />;
         } else {
-          authContext.loginAsync();
+          authContext.loginAsync(false);
           return <LoadingSpinner/>;
         }
       }}

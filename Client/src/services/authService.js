@@ -1,4 +1,4 @@
-import oidcConfiguration from "../utils/oidcConfig";
+import oidcConfiguration, {registrationOidcConfiguration} from "../utils/oidcConfig";
 import { UserManager, WebStorageStateStore, Log } from "oidc-client";
 
 class AuthService {
@@ -25,13 +25,20 @@ class AuthService {
     }
 
     signInRedirectCallbackAsync = async () => {
-        let user = await this.userManager.signinRedirectCallback()
+        await this.userManager.signinRedirectCallback()
         window.history.replaceState({}, window.document.title, window.location.origin + window.location.pathname);
-        window.location = user.state || "/";
+        window.location = "/notes";
     }
     
-    loginAsync = () => {
-        return this.userManager.signinRedirect({state:window.location.href});
+    loginAsync = (register) => {
+        let userManager  = this.userManager;
+        if(register){
+            userManager = new UserManager({
+                ...registrationOidcConfiguration,
+                userStore: new WebStorageStateStore({ store: window.sessionStorage }),
+            })
+        }
+        return userManager.signinRedirect({state:window.location.href});
     }
     
     renewTokenAsync = () => {

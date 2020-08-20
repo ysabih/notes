@@ -1,6 +1,5 @@
 import React, { useContext, useEffect } from 'react'
 import { useState } from 'react'
-import {Link} from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch, faPlus, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
@@ -32,15 +31,12 @@ const AppBar = (props) => {
 
     return (
         <>
-        <nav className="navbar bg-light navbar-expand-lg fixed-top shadow-box shadow-sm d-flex" >
+        <nav className="navbar bg-light navbar-expand-lg fixed-top shadow-box shadow-sm d-flex" style={{maxHeight: '80px'}}>
         {
             !searching ?
             <>
-                <div>
-                    <Link className="navbar-brand" to="/">
-                        <img src={require('../notes_icon_blue.png')} alt="logo" width="32" height="32" className="d-inline-block align-top"></img>
-                        <span className="ml-1 d-none d-sm-inline-block">Notes</span>
-                    </Link>
+                <div className="navbar-brand">
+                        <img src={require('../app_logo.png')} alt="logo" width="100" className="d-inline-block align-top"></img>
                 </div>
 
                 <div className="flex-grow-1 d-flex flex-row justify-content-end">

@@ -74,16 +74,8 @@ namespace OnlineNotes.Controllers
 			string userId = GetUserId();
 			using (dbContext)
 			{
-				Note existingNote;
-				try
-				{
-					existingNote = await dbContext.Notes.AsNoTracking().SingleAsync(n => n.Id == id);
-					if(existingNote.UserId != userId)
-					{
-						return Forbid();
-					}
-				}
-				catch (InvalidOperationException)
+				Note existingNote = await dbContext.Notes.SingleOrDefaultAsync(n => n.Id == id);
+				if(existingNote == null || existingNote.UserId != userId)
 				{
 					return NotFound();
 				}
