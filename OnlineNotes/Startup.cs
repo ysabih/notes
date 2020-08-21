@@ -43,10 +43,12 @@ namespace OnlineNotes
 				});
 			});
 
+			AppConfig appConfig = ReadConfig(configuration);
+
 			var connectionStringBuilder = new MySqlConnectionStringBuilder()
 			{
-				ConnectionString = configuration["Mysql:ConnectionString"],
-				Password = configuration["Mysql:Password"]
+				ConnectionString = appConfig.MysqlConnectionString,
+				Password = appConfig.MysqlPassword
 			};
 			services.AddDbContext<NotesDbContext>(options => options.UseMySql(connectionStringBuilder.ConnectionString, mySqlOptions =>
 			{
@@ -56,10 +58,10 @@ namespace OnlineNotes
 			services.AddAuthentication("Bearer")
 			.AddJwtBearer("Bearer", options =>
 			{
-				options.Authority = "http://localhost:8080/auth/realms/notes-app";
-				options.RequireHttpsMetadata = false;
+				options.Authority = appConfig.OidcAuthority;
+				options.Audience = appConfig.OidcAudience;
 
-				options.Audience = "notes-api";
+				options.RequireHttpsMetadata = appConfig.OidcRequireHttpsMetadata;
 			});
 		}
 
@@ -79,6 +81,35 @@ namespace OnlineNotes
 			{
 				routes.MapControllers();
 			});
+		}
+
+		private AppConfig ReadConfig(IConfigurationRoot config)
+		{
+			return new AppConfig
+			{
+				MysqlConnectionString = ReadStringFromConfig(config, "MysqlConnectionString"),
+				MysqlPassword = ReadStringFromConfig(config, "MysqlPassword"),
+
+				OidcAuthority = ReadStringFromConfig(config, "OidcAuthority"),
+				OidcAudience = ReadStringFromConfig(config, "OidcAudience"),
+				OidcRequireHttpsMetadata = ReadBoolFromConfig(config, "OidcRequireHttpsMetadata"),
+			};
+		}
+
+		private string ReadStringFromConfig(IConfigurationRoot config, string configName)
+		{
+			string res = config[configName];
+			if (string.IsNullOrEmpty(res))
+			{
+				throw new ArgumentException($"Config {configName} cannot be empty");
+			}
+			return res;
+		}
+
+		private bool ReadBoolFromConfig(IConfigurationRoot config, string configName)
+		{
+			string res = ReadStringFromConfig(config, configName);
+			return bool.Parse(res);
 		}
 	}
 }
