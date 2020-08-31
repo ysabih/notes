@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MySql.Data.MySqlClient;
 using OnlineNotes.Storage;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace OnlineNotes
 {
@@ -71,6 +72,11 @@ namespace OnlineNotes
 		public void Configure(
 		  IApplicationBuilder app)
 		{
+			app.UseForwardedHeaders(new ForwardedHeadersOptions
+			{
+				ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+			});
+
 			app.UseCors("default");
 			app.UseRouting();
 
