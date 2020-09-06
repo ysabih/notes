@@ -262,3 +262,6 @@ __pycache__/
 
 # Client app config
 /Client/.env.*
+
+#build (client & server)
+.build

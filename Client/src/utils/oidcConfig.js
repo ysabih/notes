@@ -1,4 +1,4 @@
-const appBaseUrl = window.location.origin.toString();
+const appBaseUrl = process.env.REACT_APP_HOME_URL;
 
 const oidcConfiguration = {
     client_id: process.env.REACT_APP_OIDC_CLIENT_ID,

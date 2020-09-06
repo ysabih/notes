@@ -12,7 +12,7 @@ import NotesContainer from './NotesContainer';
 function App() {
     return (
         <AuthProvider>
-            <Router>
+            <Router basename={process.env.REACT_APP_BASE_NAME}>
                 <Switch>
                     <Route exact={true} path="/signin-callback" component={Callback} />
                     <Route exact={true} path="/silent-renew-callback" component={SilentRenew} />

@@ -27,7 +27,7 @@ class AuthService {
     signInRedirectCallbackAsync = async () => {
         await this.userManager.signinRedirectCallback()
         window.history.replaceState({}, window.document.title, window.location.origin + window.location.pathname);
-        window.location = "/notes";
+        window.location = `${process.env.REACT_APP_HOME_URL}/notes`;
     }
     
     loginAsync = (register) => {
