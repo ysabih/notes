@@ -31,12 +31,12 @@ const AppBar = (props) => {
 
     return (
         <>
-        <nav className="navbar bg-light navbar-expand-lg fixed-top shadow-box shadow-sm d-flex" style={{maxHeight: '80px'}}>
+        <nav className="navbar bg-light navbar-expand-lg fixed-top shadow-box shadow-sm d-flex" style={{height: '60px'}}>
         {
             !searching ?
             <>
                 <div className="navbar-brand">
-                        <img src={require('../app_logo.png')} alt="logo" width="100" className="d-inline-block align-top"></img>
+                    <img src={require('../app_logo.png')} alt="logo" height="40px" className="d-inline-block align-top"></img>
                 </div>
 
                 <div className="flex-grow-1 d-flex flex-row justify-content-end">
@@ -53,7 +53,6 @@ const AppBar = (props) => {
                         </div>
                     </div>
                 </div>
-
             </>
             :
             <div className="d-flex flex-row no-wrap flex-grow-1 p-0">
