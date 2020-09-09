@@ -1,0 +1,6 @@
+.alert {
+    border-style: solide
+}
+.alert-error {
+    border-color: red
+}

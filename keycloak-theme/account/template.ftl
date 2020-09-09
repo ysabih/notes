@@ -22,7 +22,7 @@
 </head>
 <body class="admin-console user ${bodyClass}">
         
-    <nav class="navbar bg-light navbar-expand-lg fixed-top shadow-box shadow-lg" style='height: 60px'>
+    <nav class="navbar bg-light navbar-expand-lg fixed-top shadow-box shadow-sm" style='height: 60px'>
         <div className="navbar-brand">
             <img src="${url.resourcesPath}/img/app_logo.png" alt="logo" height="40" class="d-inline-block align-top">
         </div>
@@ -33,7 +33,7 @@
         </#if>
     </nav>
 
-    <div class="container" style='margin-top: 90px'>
+    <div class="container" style='margin-top: 80px'>
         <nav class="nav nav-pills nav-fill">
             <a class="nav-item nav-link <#if active=='account'>active</#if>" href="${url.accountUrl}">${msg("account")}</a>
             <#if features.passwordUpdateSupported><a class="nav-item nav-link <#if active=='password'>active</#if>" href="${url.passwordUrl}">${msg("password")}</a></#if>
