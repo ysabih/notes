@@ -9,7 +9,8 @@ export const Public = () => {
     const authContext = useContext(AuthContext);
 
     useEffect(() => {
-        authContext.getUserAsync().then((user) => {
+        authContext.signInSilentAsync().then((user) => {
+            console.log("Silent sign in. user:", user);
             setUser(user);
         })
     }, []);
@@ -33,7 +34,7 @@ export const Public = () => {
                 the experience is similar to your favourite sticky notes app on your phone and laptop</p>
             </div>
             <div className="text-center" style={{marginTop: '20px', marginBottom: '20px'}}>
-                <button onClick={authContext.loginAsync} className="btn btn-primary btn-lg rounded-pill shadow">Get Started</button>
+                <button onClick={() => authContext.loginAsync(false)} className="btn btn-primary btn-lg rounded-pill shadow">Get Started</button>
             </div>
             <div className="row">
                 <div className="align-self-center col-sm-12 col-md-8 offset-md-2 col-lg-8 offset-lg-2">

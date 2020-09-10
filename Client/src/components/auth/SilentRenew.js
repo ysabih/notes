@@ -5,8 +5,8 @@ import { AuthConsumer } from "../../providers/authProvider";
 
 export const SilentRenew = () => (
     <AuthConsumer>
-        {({ renewTokenAsync }) => {
-            renewTokenAsync();
+        {({ signInSilentCallbackAsync }) => {
+            signInSilentCallbackAsync();
             return <LoadingSpinner/>;
         }}
     </AuthConsumer>

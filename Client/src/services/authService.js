@@ -18,6 +18,14 @@ class AuthService {
         return this.userManager.getUser();
     };
 
+    signInSilentAsync = () => {
+        return this.userManager.signinSilent();
+    }
+
+    signInSilentCallbackAsync = () => {
+        return this.userManager.signinSilentCallback();
+    }
+
     //Works but I don't want to access storage directly
     isAuthenticated = () => {
         const oidcStorage = JSON.parse(sessionStorage.getItem(`oidc.user:${oidcConfiguration.authority}:${oidcConfiguration.client_id}`));
