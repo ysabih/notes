@@ -45,13 +45,18 @@ class ApiService {
         let token = await getAccessTokenAsync();
         let url = `${this.backendUrl}/api/notes/${note.id}`;
         let body = JSON.stringify(note);
-        await fetch(
+        let response = await fetch(
             url, 
             {
                 method: 'PUT', 
                 headers: new Headers({'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json'}),
                 body: body
             });
+
+        if(response.status === 200){
+            return (await response.json());
+        }
+        return null;
     }
 
     deleteNoteAsync = async (noteId) => {

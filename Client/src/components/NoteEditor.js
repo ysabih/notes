@@ -31,7 +31,7 @@ const NoteEditor = (props) => {
                         {noteId ? <button className="btn btn-link" data-toggle="modal" data-target="#deleteModal">
                             <FontAwesomeIcon icon={faTrashAlt} color="red"></FontAwesomeIcon>
                         </button> : <></>}
-                        <button className="btn btn-link ml-2" onClick={() => saveOrCreateNoteAsync()} disabled={runningBlockingOperation}>
+                        <button className="btn btn-link ml-2" onClick={() => saveOrCreateNoteAsync()} disabled={runningBlockingOperation || !isNoteValid()}>
                             <FontAwesomeIcon icon={faSave}></FontAwesomeIcon>
                         </button>
                     </div>
@@ -85,8 +85,8 @@ const NoteEditor = (props) => {
         setRunningBlockingOperation(true);
         if(noteId != null){
             let note = getNoteInState();
-            await apiService.modifyNoteAsync(note);
-            props.onNoteModified(note);
+            let modified = await apiService.modifyNoteAsync(note);
+            props.onNoteModified(modified);
         }
         else{
             let created = await apiService.createNoteAsync(getNoteInState()); 
@@ -111,6 +111,10 @@ const NoteEditor = (props) => {
         setNoteId(note.id);
         setNoteTitle(note.title);
         setNoteContent(note.content);
+    }
+
+    function isNoteValid(){
+        return noteTitle.length > 0;
     }
 
     function getNoteInState() {
