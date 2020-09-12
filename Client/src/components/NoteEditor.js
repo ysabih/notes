@@ -13,9 +13,12 @@ const NoteEditor = (props) => {
     const [noteTitle, setNoteTitle] = useState('');
     const [noteContent, setNoteContent] = useState('');
 
+    const [originalNote, setOriginalNote] = useState(null);
+
     useEffect(() => {
         if(props.note != null){
             setNoteInState(props.note);
+            setOriginalNote(props.note);
         }
     }, []);
 
@@ -31,7 +34,7 @@ const NoteEditor = (props) => {
                         {noteId ? <button className="btn btn-link" data-toggle="modal" data-target="#deleteModal">
                             <FontAwesomeIcon icon={faTrashAlt} color="red"></FontAwesomeIcon>
                         </button> : <></>}
-                        <button className="btn btn-link ml-2" onClick={() => saveOrCreateNoteAsync()} disabled={runningBlockingOperation || !isNoteValid()}>
+                        <button className="btn btn-link ml-2" onClick={() => saveOrCreateNoteAsync()} disabled={runningBlockingOperation || !isNoteValid() || !isNoteModified()}>
                             <FontAwesomeIcon icon={faSave}></FontAwesomeIcon>
                         </button>
                     </div>
@@ -87,11 +90,14 @@ const NoteEditor = (props) => {
             let note = getNoteInState();
             let modified = await apiService.modifyNoteAsync(note);
             props.onNoteModified(modified);
+            setOriginalNote(modified);
         }
         else{
             let created = await apiService.createNoteAsync(getNoteInState()); 
             setNoteInState(created);
             props.onNewNoteCreated(created);
+            setOriginalNote(created);
+            
         }
         setRunningBlockingOperation(false);
     }
@@ -115,6 +121,10 @@ const NoteEditor = (props) => {
 
     function isNoteValid(){
         return noteTitle.length > 0;
+    }
+
+    function isNoteModified(){
+        return noteTitle != originalNote.title || noteContent != originalNote.content;
     }
 
     function getNoteInState() {

@@ -21,7 +21,7 @@ class ApiService {
             return null;
         }
         return (await response.json());
-    } 
+    }
 
     createNoteAsync = async (note) => {
         let token = await getAccessTokenAsync();
