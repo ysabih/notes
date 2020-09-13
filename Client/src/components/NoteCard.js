@@ -1,6 +1,7 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import './NoteCard.css'
+import moment from 'moment';
 
 const maxTitleLength = 32;
 const maxContentLength = 256;
@@ -21,38 +22,14 @@ const NoteCard = (props) => {
 
 function getLastModifiedString(note){
     if(note.lastModified === note.created){
-        return `Created ${humanize(Date.parse(note.created))}`;
+        return `Created ${humanize(note.created)}`;
     }
-    return `Last modified ${humanize(Date.parse(note.lastModified))}`
+    return `Last modified ${humanize(note.lastModified)}`
 }
 
-function humanize(date) {
-    var delta = Math.round((+new Date() - date) / 1000);
-
-    var minute = 60,
-        hour = minute * 60,
-        day = hour * 24,
-        week = day * 7;
-
-    var fuzzy;
-
-    if (delta < 30) {
-        fuzzy = 'a moment ago.';
-    } else if (delta < minute) {
-        fuzzy = delta + ' seconds ago.';
-    } else if (delta < 2 * minute) {
-        fuzzy = 'a minute ago.'
-    } else if (delta < hour) {
-        fuzzy = Math.floor(delta / minute) + ' minutes ago.';
-    } else if (Math.floor(delta / hour) == 1) {
-        fuzzy = '1 hour ago.'
-    } else if (delta < day) {
-        fuzzy = Math.floor(delta / hour) + ' hours ago.';
-    } else if (delta < day * 2) {
-        fuzzy = 'yesterday';
-    }
-
-    return fuzzy;
+function humanize (dateString) {
+    let m = moment(dateString);
+    return m.fromNow();
 }
 
 function truncate(text, maxLegth){
