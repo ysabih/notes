@@ -124,7 +124,8 @@ const NoteEditor = (props) => {
     }
 
     function isNoteModified(){
-        return noteTitle != originalNote.title || noteContent != originalNote.content;
+        if(!originalNote) return true;
+        return noteTitle !== originalNote.title || noteContent !== originalNote.content;
     }
 
     function getNoteInState() {
