@@ -32,7 +32,10 @@ namespace OnlineNotes
 			services.AddMvc(options =>
 			{
 				options.Filters.Add<SlowDownActionFilter>();
-			}).AddNewtonsoftJson();
+			}).AddNewtonsoftJson(options =>
+			{
+				options.SerializerSettings.DateFormatHandling = Newtonsoft.Json.DateFormatHandling.IsoDateFormat;
+			});
 
 			services.AddCors(options => {
 				options.AddPolicy("default",
@@ -49,7 +52,9 @@ namespace OnlineNotes
 			var connectionStringBuilder = new MySqlConnectionStringBuilder()
 			{
 				ConnectionString = appConfig.MysqlConnectionString,
-				Password = appConfig.MysqlPassword
+				Password = appConfig.MysqlPassword,
+				// All dates are stored as utc dates, Hard-coded this because DateKind cannot be persisted
+				DateTimeKind = MySqlDateTimeKind.Utc
 			};
 			services.AddDbContext<NotesDbContext>(options => options.UseMySql(connectionStringBuilder.ConnectionString, mySqlOptions =>
 			{

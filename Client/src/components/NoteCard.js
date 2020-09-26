@@ -27,6 +27,7 @@ function getLastModifiedString(note){
     return `Last modified ${humanize(note.lastModified)}`
 }
 
+
 function humanize (dateString) {
     let m = moment(dateString);
     return m.fromNow();

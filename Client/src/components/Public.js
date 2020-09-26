@@ -10,7 +10,6 @@ export const Public = () => {
 
     useEffect(() => {
         authContext.signInSilentAsync().then((user) => {
-            console.log("Silent sign in. user:", user);
             setUser(user);
         })
     }, []);

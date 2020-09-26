@@ -31,7 +31,7 @@ namespace OnlineNotes.Controllers
 			}
 
 			note.Id = Guid.NewGuid();
-			note.Created = note.LastModified = DateTime.Now;
+			note.Created = note.LastModified = DateTime.UtcNow;
 			note.UserId = GetUserId();
 
 			using (dbContext)
@@ -82,7 +82,7 @@ namespace OnlineNotes.Controllers
 
 				existingNote.Title = note.Title;
 				existingNote.Content = note.Content;
-				existingNote.LastModified = DateTime.Now;
+				existingNote.LastModified = DateTime.UtcNow;
 
 				await dbContext.SaveChangesAsync();
 				return Ok(existingNote);
