@@ -56,10 +56,10 @@ namespace OnlineNotes
 				// All dates are stored as utc dates, Hard-coded this because DateKind cannot be persisted
 				DateTimeKind = MySqlDateTimeKind.Utc
 			};
-			services.AddDbContext<NotesDbContext>(options => options.UseMySql(connectionStringBuilder.ConnectionString, mySqlOptions =>
+			services.AddDbContextPool<NotesDbContext>(options => options.UseMySql(connectionStringBuilder.ConnectionString, mySqlOptions =>
 			{
 				mySqlOptions.ServerVersion(new Version(5, 7), ServerType.MySql);
-			}));
+			}), poolSize: appConfig.MysqlConnectionPoolSize);
 
 			services.AddAuthentication("Bearer")
 			.AddJwtBearer("Bearer", options =>
@@ -100,6 +100,7 @@ namespace OnlineNotes
 			{
 				MysqlConnectionString = ReadStringFromConfig(config, "MysqlConnectionString"),
 				MysqlPassword = ReadStringFromConfig(config, "MysqlPassword"),
+				MysqlConnectionPoolSize = ReadIntFromConfig(config, "MysqlConnectionPoolSize"),
 
 				OidcAuthority = ReadStringFromConfig(config, "OidcAuthority"),
 				OidcAudience = ReadStringFromConfig(config, "OidcAudience"),
@@ -121,6 +122,12 @@ namespace OnlineNotes
 		{
 			string res = ReadStringFromConfig(config, configName);
 			return bool.Parse(res);
+		}
+
+		private int ReadIntFromConfig(IConfigurationRoot config, string configName)
+		{
+			string res = ReadStringFromConfig(config, configName);
+			return int.Parse(res);
 		}
 	}
 }

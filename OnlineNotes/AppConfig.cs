@@ -9,6 +9,7 @@ namespace OnlineNotes
 	{
 		public string MysqlConnectionString { get; set; }
 		public string MysqlPassword { get; set; }
+		public int MysqlConnectionPoolSize { get; set; }
 		public string OidcAuthority { get; set; }
 		public string OidcAudience { get; set; }
 		public bool OidcRequireHttpsMetadata { get; set; }
