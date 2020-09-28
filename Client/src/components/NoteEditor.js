@@ -74,7 +74,7 @@ const NoteEditor = (props) => {
                     }} 
                 />
                 <textarea
-                    className="form-control form-group" rows="25" 
+                    className="form-control form-group" rows="100" 
                     placeholder= {runningBlockingOperation ? "" : "Note something..." }
                     disabled = {runningBlockingOperation}
                     value={noteContent} 
