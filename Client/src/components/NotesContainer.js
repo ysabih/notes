@@ -3,7 +3,6 @@ import { useState, useEffect, useContext } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import NoteCard from './NoteCard';
 import LoadingSpinner from './LoadingSpinner';
-import apiService from 'services/apiService';
 import AppBar from './AppBar';
 import {ApiCacheContext} from 'providers/apiCacheProvider';
 
@@ -13,13 +12,7 @@ const NotesContainer = () => {
     const apiCacheProvider = useContext(ApiCacheContext);
 
     useEffect(() => {
-        apiService.getAllNotesAsync().then((notes) => {
-            apiCacheProvider.setNotesList(notes);
-            apiCacheProvider.setDataFetched(true);
-        })
-        .catch((failureReason) => {
-            apiCacheProvider.setDataFetchFailed(true);
-        });   
+        apiCacheProvider.getOrFetchNotesAsync();   
     }, []);
 
     function renderCards(notesList, searchString, setSearchString) {

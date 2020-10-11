@@ -22,13 +22,18 @@ const NoteEditor = (props) => {
 
     useEffect(() => {
         if(noteIdParam != null && !props.newNote){
-            let note = apiCacheProvider.notesList.find(n => n.id === noteIdParam);
-            setNoteInState(note);
-            setOriginalNote(note);
+            apiCacheProvider.getOrFetchNotesAsync().then((notes) => {
+                if(apiCacheProvider.dataFetchFailed || notes == null) return;
+
+                let note = notes.find(n => n.id === noteIdParam);
+                setNoteInState(note);
+                setOriginalNote(note);
+            });
         }
     }, []);
 
     function renderContent(){
+        let blocking = runningBlockingOperation || !apiCacheProvider.dataFetched;
         return (
         <div className="container-fluid mt-1">
             <div className="container-fluid mb-2 pl-0">
@@ -68,12 +73,12 @@ const NoteEditor = (props) => {
             </div>
 
             <div>
-                {runningBlockingOperation ? <LoadingSpinner /> : <></>}
+                {blocking ? <LoadingSpinner /> : <></>}
                 <input 
                     className="form-control form-control-lg form-group font-weight-bold" 
                     type="text" 
-                    placeholder= {runningBlockingOperation ? "" : "Title"}
-                    disabled = {runningBlockingOperation}
+                    placeholder= {blocking ? "" : "Title"}
+                    disabled = {blocking}
                     autoFocus value={noteTitle} 
                     onChange={(event) => {
                         setNoteTitle(event.target.value);
@@ -81,13 +86,19 @@ const NoteEditor = (props) => {
                 />
                 <textarea
                     className="form-control form-group" rows="100" 
-                    placeholder= {runningBlockingOperation ? "" : "Note something..." }
-                    disabled = {runningBlockingOperation}
+                    placeholder= {blocking ? "" : "Note something..." }
+                    disabled = {blocking}
                     value={noteContent} 
                     onChange={(event) => setNoteContent(event.target.value)}
                 />
             </div>
         </div>);
+    }
+
+    function renderDataFetchErrorMessage() {
+        return (
+            <h4>Oops! Failed to fetch data from server, try again later</h4>
+        )
     }
 
     async function saveOrCreateNoteAsync() {
@@ -165,7 +176,8 @@ const NoteEditor = (props) => {
         if(noteId != null) result.id = noteId;
         return result;
     }
-    return renderContent();
+
+    return apiCacheProvider.dataFetchFailed ? renderDataFetchErrorMessage() : renderContent();
 };
 
 export default NoteEditor;
