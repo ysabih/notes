@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
+import { Link, useHistory, useParams } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faTrashAlt, faSave } from '@fortawesome/free-solid-svg-icons'
 import './NoteEditor.css'
 import LoadingSpinner from './LoadingSpinner'
 import apiService from 'services/apiService';
+import { ApiCacheContext } from 'providers/apiCacheProvider'
 
 // Expects note object to be passed as a prop
 const NoteEditor = (props) => {
@@ -12,13 +14,17 @@ const NoteEditor = (props) => {
     const [noteId, setNoteId] = useState(null);
     const [noteTitle, setNoteTitle] = useState('');
     const [noteContent, setNoteContent] = useState('');
-
     const [originalNote, setOriginalNote] = useState(null);
 
+    let { noteIdParam } = useParams();
+    let apiCacheProvider = useContext(ApiCacheContext);
+    let history = useHistory();
+
     useEffect(() => {
-        if(props.note != null){
-            setNoteInState(props.note);
-            setOriginalNote(props.note);
+        if(noteIdParam != null && !props.newNote){
+            let note = apiCacheProvider.notesList.find(n => n.id === noteIdParam);
+            setNoteInState(note);
+            setOriginalNote(note);
         }
     }, []);
 
@@ -27,9 +33,9 @@ const NoteEditor = (props) => {
         <div className="container-fluid mt-1">
             <div className="container-fluid mb-2 pl-0">
                 <div className="row align-items-center">
-                    <button className="btn btn-link btn-lg" onClick={props.backFunc}>
+                    <Link to={'/notes'} className="btn btn-link btn-lg">
                         <FontAwesomeIcon icon={faArrowLeft}></FontAwesomeIcon>
-                    </button>
+                    </Link>
                     <div className="row align-items-right ml-auto px-3">
                         {noteId ? <button className="btn btn-link" data-toggle="modal" data-target="#deleteModal">
                             <FontAwesomeIcon icon={faTrashAlt} color="red"></FontAwesomeIcon>
@@ -89,13 +95,13 @@ const NoteEditor = (props) => {
         if(noteId != null){
             let note = getNoteInState();
             let modified = await apiService.modifyNoteAsync(note);
-            props.onNoteModified(modified);
+            onNoteModified(modified);
             setOriginalNote(modified);
         }
         else{
             let created = await apiService.createNoteAsync(getNoteInState()); 
             setNoteInState(created);
-            props.onNewNoteCreated(created);
+            onNewNoteCreated(created);
             setOriginalNote(created);
             
         }
@@ -108,9 +114,32 @@ const NoteEditor = (props) => {
 
         if(success){
             // Note was deleted with success, back to home page
-            props.onNoteDeleted(noteId);
-            props.backFunc();
+            onNoteDeleted(noteId);
         }
+    }
+
+    function onNewNoteCreated(newNote){
+        // Update notes in state
+        let currentList = apiCacheProvider.notesList;
+        currentList.push(newNote);
+        apiCacheProvider.setNotesList(currentList);
+
+        history.push(`/notes/${newNote.id}`);
+    }
+
+    function onNoteDeleted(noteId){
+        let currentList = apiCacheProvider.notesList;
+        let updatedList = currentList.filter(element => element.id !== noteId);
+        apiCacheProvider.setNotesList(updatedList);
+
+        history.push('/notes');
+    }
+
+    function onNoteModified(note){
+        let currentList = apiCacheProvider.notesList;
+        let indexOfModified = currentList.findIndex(element => element.id === note.id);
+        currentList[indexOfModified] = note;
+        apiCacheProvider.setNotesList(currentList);
     }
     
     function setNoteInState(note) {

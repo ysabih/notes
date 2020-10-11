@@ -6,6 +6,7 @@ import { faSearch, faPlus, faArrowLeft } from '@fortawesome/free-solid-svg-icons
 import './AppBar.css'
 import { AuthContext } from 'providers/authProvider'
 import {USER_PROFILE_URL} from '../utils/oidcConfig'
+import { Link } from 'react-router-dom'
 
 const AppBar = (props) => {
     const [searching, setSearching] = useState(false);
@@ -40,7 +41,7 @@ const AppBar = (props) => {
                 </div>
 
                 <div className="flex-grow-1 d-flex flex-row justify-content-end">
-                    <button onClick={props.createNewNote} id="addButton" className="btn btn-link"> <FontAwesomeIcon icon={faPlus} /> </button>
+                    <Link to={'/new'} id="addButton" className="btn btn-link"> <FontAwesomeIcon icon={faPlus} /> </Link>
                     <button id="searchButton" type="button" className="btn btn-link" onClick={() => setSearching(true)}> <FontAwesomeIcon icon={faSearch} /> </button>
                     {/*  */}
                     <div className="dropdown">
